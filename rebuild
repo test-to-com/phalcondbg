@@ -1,0 +1,118 @@
+#!/bin/bash
+
+# --------------------------------------------------------------------------
+# ZEP to PHP Translator                                                    
+# --------------------------------------------------------------------------
+# Copyright (c) 2015 pf at sourcenotes.org                                 
+# --------------------------------------------------------------------------
+# This source file is subject the MIT license, that is bundled with        
+# this package in the file LICENSE, and is available through the           
+# world-wide-web at the following url: https://opensource.org/licenses/MIT                                      
+# --------------------------------------------------------------------------
+
+# Get the Scripts Working Directory
+CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+#
+# Validate Base Requirements
+#
+
+type zephir >/dev/null 2>&1
+if [[ $? != 0 ]]; then
+  echo "error: zephir is not installed"
+  exit 1
+fi
+
+type zeptophp >/dev/null 2>&1
+if [[ $? != 0 ]]; then
+  echo "error: ZEP to PHP is not installed"
+  exit 1
+fi
+
+# Create/Clean Build Directory
+BUILD="${CWD}/build"
+if [ ! -d "${BUILD}" ]; then # NO: Create
+  mkdir -p "${BUILD}"
+else # YES: Clean 
+  cd "${BUILD}"
+  find . -delete
+fi
+
+#
+# Build Extension
+#
+
+# Phalcon (S)ource Root
+SPHALCONROOT="${CWD}/externals/cphalcon"
+SPHALCONEXT="${SPHALCONROOT}/ext"
+
+# Initialize Extension Directory
+cd "${BUILD}"
+zephir init phalcondbg
+
+# Phalcon (D)estination Root
+DPHALCONROOT="${BUILD}/phalcondbg"
+DPHALCONEXT="${DPHALCONROOT}/ext"
+
+# Initialize Extension Sources
+cp "${CWD}/config.json" "${DPHALCONROOT}"
+rsync -a "${CWD}/phalcondbg/" "${DPHALCONROOT}/phalcondbg/"
+
+# Create Directories
+mkdir "${DPHALCONEXT}/"{annotations,phql,volt}
+
+# Copy Parser Files
+cp "${SPHALCONEXT}/phalcon/annotations/"{annot.h,generate,lemon.c,lempar.c,parser.lemon,base.c,scanner.re,scanner.h} "${DPHALCONEXT}/annotations"
+cp "${SPHALCONEXT}/phalcon/mvc/model/query/"{phql.h,generate,lemon.c,lempar.c,parser.lemon,base.c,scanner.re,scanner.h} "${DPHALCONEXT}/phql"
+cp "${SPHALCONEXT}/phalcon/mvc/view/engine/volt/"{volt.h,generate,lemon.c,lempar.c,parser.lemon,base.c,scanner.re,scanner.h} "${DPHALCONEXT}/volt"
+
+# Correct Parsers to take into account extension name change
+sed -i.bak s/"\"php_phalcon.h\""/"\"php_phalcondbg.h\""/g "${DPHALCONEXT}/annotations/parser.lemon"
+sed -i.bak s/"\"php_phalcon.h\""/"\"php_phalcondbg.h\""/g "${DPHALCONEXT}/phql/parser.lemon"
+sed -i.bak s/"\"php_phalcon.h\""/"\"php_phalcondbg.h\""/g "${DPHALCONEXT}/volt/parser.lemon"
+sed -i s/"\"phalcon.h\""/"\"phalcondbg.h\""/g "${DPHALCONEXT}/annotations/parser.lemon"
+sed -i s/"\"phalcon.h\""/"\"phalcondbg.h\""/g "${DPHALCONEXT}/phql/parser.lemon"
+sed -i s/"\"phalcon.h\""/"\"phalcondbg.h\""/g "${DPHALCONEXT}/volt/parser.lemon"
+
+# Correct Parser Base File
+sed -i.bak s/phalcon_annotations_exception_ce/phalcondbg_exception_ce/g "${DPHALCONEXT}/annotations/base.c"
+sed -i.bak s/phalcon_mvc_model_exception_ce/phalcondbg_exception_ce/g "${DPHALCONEXT}/phql/base.c"
+sed -i.bak s/phalcon_mvc_view_exception_ce/phalcondbg_exception_ce/g "${DPHALCONEXT}/volt/base.c"
+
+## PHQL Base Refers to Globals
+sed -i s/zend_phalcon_globals/zend_phalcondbg_globals/g "${DPHALCONEXT}/phql/base.c"
+
+# Correct Scanners to take into account extension name change
+sed -i.bak s/"\"php_phalcon.h\""/"\"php_phalcondbg.h\""/g "${DPHALCONEXT}/annotations/scanner.re"
+sed -i.bak s/"\"php_phalcon.h\""/"\"php_phalcondbg.h\""/g "${DPHALCONEXT}/phql/scanner.re"
+sed -i.bak s/"\"php_phalcon.h\""/"\"php_phalcondbg.h\""/g "${DPHALCONEXT}/volt/scanner.re"
+
+# Volt Scanner Header Requires Special Modification
+sed -i.bak s/"\"php_phalcon.h\""/"\"php_phalcondbg.h\""/g "${DPHALCONEXT}/volt/scanner.h"
+
+# Create Optimizers Directory for Zephir
+mkdir "${DPHALCONROOT}/optimizers"
+
+# Copy Optimizers
+cp "${SPHALCONROOT}/optimizers/"{PhannotParseAnnotationsOptimizer.php,PhqlParsePhqlOptimizer.php,PhvoltParseViewOptimizer.php} "${DPHALCONROOT}/optimizers"
+
+# Execute Parser Generators
+cd "${DPHALCONEXT}/annotations"
+./generate
+cd "${DPHALCONEXT}/phql"
+./generate
+cd "${DPHALCONEXT}/volt"
+./generate
+
+# Compile Extension
+cd "${DPHALCONROOT}"
+zephir compile phalcondbg
+
+# 
+# Create Director
+#
+# Generate PHALCON PHP Sources
+#
+
+# Restore Working Directory
+cd "${CWD}"

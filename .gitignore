@@ -1,0 +1,19 @@
+# Ignore Directories
+bin/
+build/
+phalcon/
+
+# Ignore Special Files
+phpinfo.php
+*~
+*-
+*.bak
+*.log
+
+# Ignore Specific Files
+
+# If Phalcon Directory symlinked, ignore it to.
+phalcon
+
+# GitEye Specific
+/.project

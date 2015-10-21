@@ -36,7 +36,7 @@ As of this moment, you can step through the PHALCON Code.
 Build Instructions
 ------------------
 
-**IMPORTANT:** I use Ubuntu 14.04 as my development OS. I have not tried building this on any other Linux Distribution or Windows.
+**DISCLAIMER:** I use Ubuntu 14.04 as my development OS. I have not tried building this on any other Linux Distribution or Windows.
 
 ### Linux/Unix/Mac
 
@@ -46,7 +46,7 @@ You will need, working:
 * [ZEPHIR](http://zephir-lang.com/) last version tested was 0.8.x
 * [ZEP to PHP](https://github.com/test-to-com/zep-to-php)
 
-**NOTE:** Please follow these projects install instruction (including there requirements). They have to be working for what follows to work!!!
+**NOTE:** Please follow these projects seperate install instruction (including their requirements). They have to be working for what follows to work!!!
 
 This should basically work on any Linux Distribution.
 

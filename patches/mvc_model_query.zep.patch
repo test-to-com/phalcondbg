@@ -1,5 +1,5 @@
 --- ../externals/cphalcon/phalcon/mvc/model/query.zep	2015-10-20 08:51:08.607674342 +0100
-+++ ../../zephir/phalcon/mvc/model/query.zep	2015-10-13 13:50:40.089151157 +0100
++++ ../../zephir/phalcon/mvc/model/query.zep	2015-10-21 15:16:49.980789312 +0100
 @@ -30,6 +30,7 @@ use Phalcon\Mvc\Model\ManagerInterface;
  use Phalcon\Mvc\Model\QueryInterface;
  use Phalcon\Cache\BackendInterface;
@@ -410,6 +410,15 @@
  							"name": joinAlias
  						]
  					];
+@@ -2408,7 +2409,7 @@ class Query implements QueryInterface, I
+ 		 * This function parses the PHQL statement
+ 		 */
+ 		let phql = this->_phql,
+-			ast = phql_parse_phql(phql);
++			ast = phalcon_phql_parse_phql(phql);
+ 
+ 		let irPhql = null, uniqueId = null;
+ 
 @@ -2438,19 +2439,19 @@ class Query implements QueryInterface, I
  
  				switch type {

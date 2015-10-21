@@ -1,0 +1,19 @@
+--- ../externals/cphalcon/phalcon/mvc/view/engine/volt/compiler.zep	2015-10-20 08:51:08.611674342 +0100
++++ ../../zephir/phalcon/mvc/view/engine/volt/compiler.zep	2015-10-21 15:16:40.048789385 +0100
+@@ -2232,7 +2232,7 @@ class Compiler implements InjectionAware
+ 			}
+ 		}
+ 
+-		let intermediate = phvolt_parse_view(viewCode, currentPath);
++		let intermediate = phalcon_phvolt_parse_view(viewCode, currentPath);
+ 
+ 		/**
+ 		 * The parsing must return a valid array
+@@ -2627,6 +2627,6 @@ class Compiler implements InjectionAware
+ 	public function parse(string! viewCode)
+ 	{
+ 		var currentPath = "eval code";
+-		return phvolt_parse_view(viewCode, currentPath);
++		return phalcon_phvolt_parse_view(viewCode, currentPath);
+ 	}
+ }

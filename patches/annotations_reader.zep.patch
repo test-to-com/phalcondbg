@@ -1,0 +1,37 @@
+--- ../externals/cphalcon/phalcon/annotations/reader.zep	2015-10-20 08:51:08.587674342 +0100
++++ ../../zephir/phalcon/annotations/reader.zep	2015-10-21 15:16:25.824789490 +0100
+@@ -52,7 +52,7 @@ class Reader implements ReaderInterface
+ 			/**
+ 			 * Read annotations from class
+ 			 */
+-			let classAnnotations = phannot_parse_annotations(comment, reflection->getFileName(), reflection->getStartLine());
++			let classAnnotations = phalcon_phannot_parse_annotations(comment, reflection->getFileName(), reflection->getStartLine());
+ 
+ 			/**
+ 			 * Append the class annotations to the annotations var
+@@ -85,7 +85,7 @@ class Reader implements ReaderInterface
+ 					/**
+ 					 * Read annotations from the docblock
+ 					 */
+-					let propertyAnnotations = phannot_parse_annotations(comment, reflection->getFileName(), line);
++					let propertyAnnotations = phalcon_phannot_parse_annotations(comment, reflection->getFileName(), line);
+ 					if typeof propertyAnnotations == "array" {
+ 						let annotationsProperties[property->name] = propertyAnnotations;
+ 					}
+@@ -116,7 +116,7 @@ class Reader implements ReaderInterface
+ 					/**
+ 					 * Read annotations from class
+ 					 */
+-					let methodAnnotations = phannot_parse_annotations(comment, method->getFileName(), method->getStartLine());
++					let methodAnnotations = phalcon_phannot_parse_annotations(comment, method->getFileName(), method->getStartLine());
+ 					if typeof methodAnnotations == "array" {
+ 						let annotationsMethods[method->name] = methodAnnotations;
+ 					}
+@@ -140,6 +140,6 @@ class Reader implements ReaderInterface
+ 		if typeof file != "string" {
+ 			let file = "eval code";
+ 		}
+-		return phannot_parse_annotations(docBlock, file, line);
++		return phalcon_phannot_parse_annotations(docBlock, file, line);
+ 	}
+ }

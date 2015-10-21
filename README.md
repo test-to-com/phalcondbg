@@ -87,7 +87,7 @@ Special Notes
 
 Why the ZEP patch files?
 
-Well a series of patches are just to correct problems in PHALCON ZEP code, that are either automatically corrected taken care of by ZEPHIR, during it's conversion of ZEP to C, or small bugs in the actual ZEPHIR code.
+Well a series of patches was just to correct problems in PHALCON ZEP code, that are either automatically corrected by ZEPHIR, during it's conversion of ZEP to C, or small bugs in the actual ZEPHIR code.
 
 Example:
 
@@ -98,12 +98,13 @@ Another set of patches (mvc_model_query_lang.zep.patch and mvc_model_query.zep.p
 
 Why a hack?
 
-Well to explain that, you have to how these parsers are built and coded. 
+Well to explain that, you have to know how these parsers are built and coded. 
 
 PHALCON team uses [re2c](http://re2c.org/) to build the scanner and [lemon](http://www.hwaci.com/sw/lemon/) to build the parser.
 
-The scanner produces a C include file (scanner.h) that contains IDENTIFIERS for each scan token (ex: #define #define PHQL_T_STARALL 352).
-The PHALCON uses a HACK/BUG/FEATURE in ZEPHIR that translates something like (taken from PHALCON mvc\model\query.zep):
+The scanner produces a C include file (scanner.h) that contains IDENTIFIERS for each scan token (ex: #define PHQL_T_STARALL 352).
+
+PHALCON uses a HACK/BUG/FEATURE in ZEPHIR that translates something like (taken from PHALCON mvc\model\query.zep):
 
 ```
 protected final function _getCallArgument(array! argument) -> array
@@ -147,7 +148,7 @@ Notice that, PHQL_T_STARALL generated ZEPHIR_IS_LONG(_0, 352). How it generated 
 
 But I assume that:
 
-1. It directly references to "scanner.h" file (which would require some sort o C preprocessor function in ZEPHIR) to extract the values, or
+1. It directly referenced the "scanner.h" file (which would require some sort o C preprocessor function in ZEPHIR) to extract the values, or
 2. That this is handed coded modification of the ZEPHIR produced files.
 
 In either case, ZEP to PHP translates this code (without the patch) to:
@@ -162,7 +163,7 @@ protected final function _getCallArgument($argument)
 }
 ```
 
-Notice the simple use of PHQL_T_STARALL. Unfortunately, unless you 'define' PHQL_T_STARALL it will be interpreted by PHP as string and not produce the correct results.
+Notice the simple use of PHQL_T_STARALL. Unfortunately, unless you 'define' PHQL_T_STARALL, some where in the PHP code, it will be interpreted by PHP as string and not produce the correct results.
 
 My solution to the problem was, to import the constants defined in "scanner.h", translated by hand, into mvc/model/query/lang.zep and then replace PHQL_T_* by Lang::PHQL_T_*.
 
@@ -170,5 +171,8 @@ Why do I think that PHALCON TEAM solution is hack?
 
 Because it bypasses ZEPHIR's compile time type checking, which was one of the stated goals of the ZEPHIR Languange.
 
-
 **IMPORTANT:** I have not applied similar patches for Volt and Annotations Parser, BECAUSE I HAVEN'T TESTED THAT CODE. BUT, A SET OF SIMILAR PATCHES WILL PROBABLY BE REQUIRED in order to use Volt and Annotations Parsers withou error.
+
+The last important patch was to loader.zep.
+
+This patch just simply modifies the autoloader so that it searches for missing classes, in files, with the class name in lowercase (rather than just searching for php files whose name match the class name, case sensitive).

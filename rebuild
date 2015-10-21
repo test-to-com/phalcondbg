@@ -19,14 +19,14 @@ CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 type zephir >/dev/null 2>&1
 if [[ $? != 0 ]]; then
-  echo "error: zephir is not installed"
+  echo "ERROR: zephir is not installed"
   exit 1
 fi
 
 type zeptophp >/dev/null 2>&1
 if [[ $? != 0 ]]; then
-  echo "error: ZEP to PHP is not installed"
-  exit 1
+  echo "ERROR: ZEP to PHP is not installed"
+  exit 2
 fi
 
 # Create/Clean Build Directory
@@ -108,8 +108,17 @@ cd "${DPHALCONEXT}/volt"
 cd "${DPHALCONROOT}"
 zephir compile phalcondbg
 
-# 
-# Create Director
+# Was zephir able to build the extension?
+if [ ! -f "${DPHALCONEXT}/modules/phalcondbg.so" ]; then # NO: Display Error
+  echo "ERROR: Zephir failed to produce PHALCON DEBUG Extension"
+  echo "Please look at [${DPHALCONEXT}/compile-errors.log] for possible reasons"
+  exit 3
+fi
+
+# Move Extension File to of Build Directory so it's easy to find
+chmod 0644 "${DPHALCONEXT}/modules/phalcondbg.so"
+cp "${DPHALCONEXT}/modules/phalcondbg.so" "${BUILD}"
+
 #
 # Generate PHALCON PHP Sources
 #
@@ -145,3 +154,30 @@ mkdir "${BUILD}/"{cache,tmp,php}
 
 # Convert ZEP to PHP
 zeptophp -c "${BUILD}/cache" -t "${BUILD}/tmp" -o "${BUILD}/php" "${CWD}/phalcon"
+
+# Was PHALCON PHP Built?
+if [ $? != 0 ]; then # NO: Display Error
+  echo "ERROR: ZEP to PHP Failed to produce PHALCON PHP"
+  echo "Please look at the CONSOLE OUTPUT for possible reasons"
+  exit 4
+fi
+
+#
+# THE END
+#
+
+echo ""
+echo "*********************************************************************"
+echo "PHALCON PHP and Debug Extension Built"
+echo "You will find:"
+echo "PHALCON PHP -> [${BUILD}/php]"
+echo "PHALCON Debug Extension -> [${BUILD}/phalcondbg.so]"
+echo ""
+echo "IMPORTANT:"
+echo "- PHALCON PHP Requires the use of PHALCON DEBUG EXTENSION"
+echo "- To use PHALCON PHP you have to disable the normal PHALCON Extension"
+echo "*********************************************************************"
+echo "                            THE END"
+echo "*********************************************************************"
+
+

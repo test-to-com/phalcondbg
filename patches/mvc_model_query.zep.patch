@@ -1,0 +1,550 @@
+--- ../externals/cphalcon/phalcon/mvc/model/query.zep	2015-10-20 08:51:08.607674342 +0100
++++ ../../zephir/phalcon/mvc/model/query.zep	2015-10-13 13:50:40.089151157 +0100
+@@ -30,6 +30,7 @@ use Phalcon\Mvc\Model\ManagerInterface;
+ use Phalcon\Mvc\Model\QueryInterface;
+ use Phalcon\Cache\BackendInterface;
+ use Phalcon\Mvc\Model\Query\Status;
++use Phalcon\Mvc\Model\Query\Lang;
+ use Phalcon\Mvc\Model\Resultset\Complex;
+ use Phalcon\Mvc\Model\Query\StatusInterface;
+ use Phalcon\Mvc\Model\ResultsetInterface;
+@@ -333,7 +334,7 @@ class Query implements QueryInterface, I
+ 	 */
+ 	protected final function _getCallArgument(array! argument) -> array
+ 	{
+-		if argument["type"] == PHQL_T_STARALL {
++		if argument["type"] == Lang::PHQL_T_STARALL {
+ 			return ["type": "all"];
+ 		}
+ 		return this->_getExpression(argument);
+@@ -434,7 +435,7 @@ class Query implements QueryInterface, I
+ 
+ 			let tempNotQuoting = true;
+ 
+-			if exprType != PHQL_T_CASE {
++			if exprType != Lang::PHQL_T_CASE {
+ 
+ 				/**
+ 				 * Resolving the left part of the expression if any
+@@ -456,94 +457,94 @@ class Query implements QueryInterface, I
+ 			 */
+ 			switch exprType {
+ 
+-				case PHQL_T_LESS:
++				case Lang::PHQL_T_LESS:
+ 					let exprReturn = ["type": "binary-op", "op": "<", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_EQUALS:
++				case Lang::PHQL_T_EQUALS:
+ 					let exprReturn = ["type": "binary-op", "op": "=", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_GREATER:
++				case Lang::PHQL_T_GREATER:
+ 					let exprReturn = ["type": "binary-op", "op": ">", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_NOTEQUALS:
++				case Lang::PHQL_T_NOTEQUALS:
+ 					let exprReturn = ["type": "binary-op", "op": "<>", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_LESSEQUAL:
++				case Lang::PHQL_T_LESSEQUAL:
+ 					let exprReturn = ["type": "binary-op", "op": "<=", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_GREATEREQUAL:
++				case Lang::PHQL_T_GREATEREQUAL:
+ 					let exprReturn = ["type": "binary-op", "op": ">=", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_AND:
++				case Lang::PHQL_T_AND:
+ 					let exprReturn = ["type": "binary-op", "op": "AND", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_OR:
++				case Lang::PHQL_T_OR:
+ 					let exprReturn = ["type": "binary-op", "op": "OR", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_QUALIFIED:
++				case Lang::PHQL_T_QUALIFIED:
+ 					let exprReturn = this->_getQualified(expr);
+ 					break;
+ 
+-				case PHQL_T_ADD:
++				case Lang::PHQL_T_ADD:
+ 					let exprReturn = ["type": "binary-op", "op": "+", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_SUB:
++				case Lang::PHQL_T_SUB:
+ 					let exprReturn = ["type": "binary-op", "op": "-", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_MUL:
++				case Lang::PHQL_T_MUL:
+ 					let exprReturn = ["type": "binary-op", "op": "*", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_DIV:
++				case Lang::PHQL_T_DIV:
+ 					let exprReturn = ["type": "binary-op", "op": "/", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_MOD:
++				case Lang::PHQL_T_MOD:
+ 					let exprReturn = ["type": "binary-op", "op": "%", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_BITWISE_AND:
++				case Lang::PHQL_T_BITWISE_AND:
+ 					let exprReturn = ["type": "binary-op", "op": "&", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_BITWISE_OR:
++				case Lang::PHQL_T_BITWISE_OR:
+ 					let exprReturn = ["type": "binary-op", "op": "|", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_ENCLOSED:
+-				case PHQL_T_SUBQUERY:
++				case Lang::PHQL_T_ENCLOSED:
++				case Lang::PHQL_T_SUBQUERY:
+ 					let exprReturn = ["type": "parentheses", "left": left];
+ 					break;
+ 
+-				case PHQL_T_MINUS:
++				case Lang::PHQL_T_MINUS:
+ 					let exprReturn = ["type": "unary-op", "op": "-", "right": right];
+ 					break;
+ 
+-				case PHQL_T_INTEGER:
+-				case PHQL_T_DOUBLE:
+-				case PHQL_T_HINTEGER:
++				case Lang::PHQL_T_INTEGER:
++				case Lang::PHQL_T_DOUBLE:
++				case Lang::PHQL_T_HINTEGER:
+ 					let exprReturn = ["type": "literal", "value": expr["value"]];
+ 					break;
+ 
+-				case PHQL_T_TRUE:
++				case Lang::PHQL_T_TRUE:
+ 					let exprReturn = ["type": "literal", "value": "TRUE"];
+ 					break;
+ 
+-				case PHQL_T_FALSE:
++				case Lang::PHQL_T_FALSE:
+ 					let exprReturn = ["type": "literal", "value": "FALSE"];
+ 					break;
+ 
+-				case PHQL_T_STRING:
++				case Lang::PHQL_T_STRING:
+ 					let value = expr["value"];
+ 					if quoting === true {
+ 						/**
+@@ -561,15 +562,15 @@ class Query implements QueryInterface, I
+ 					let exprReturn = ["type": "literal", "value": exprValue];
+ 					break;
+ 
+-				case PHQL_T_NPLACEHOLDER:
++				case Lang::PHQL_T_NPLACEHOLDER:
+ 					let exprReturn = ["type": "placeholder", "value": str_replace("?", ":", expr["value"])];
+ 					break;
+ 
+-				case PHQL_T_SPLACEHOLDER:
++				case Lang::PHQL_T_SPLACEHOLDER:
+ 					let exprReturn = ["type": "placeholder", "value": ":" . expr["value"]];
+ 					break;
+ 
+-				case PHQL_T_BPLACEHOLDER:
++				case Lang::PHQL_T_BPLACEHOLDER:
+ 					let value = expr["value"];
+ 					if memstr(value, ":") {
+ 
+@@ -642,83 +643,83 @@ class Query implements QueryInterface, I
+ 					}
+ 					break;
+ 
+-				case PHQL_T_NULL:
++				case Lang::PHQL_T_NULL:
+ 					let exprReturn = ["type": "literal", "value": "NULL"];
+ 					break;
+ 
+-				case PHQL_T_LIKE:
++				case Lang::PHQL_T_LIKE:
+ 					let exprReturn = ["type": "binary-op", "op": "LIKE", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_NLIKE:
++				case Lang::PHQL_T_NLIKE:
+ 					let exprReturn = ["type": "binary-op", "op": "NOT LIKE", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_ILIKE:
++				case Lang::PHQL_T_ILIKE:
+ 					let exprReturn = ["type": "binary-op", "op": "ILIKE", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_NILIKE:
++				case Lang::PHQL_T_NILIKE:
+ 					let exprReturn = ["type": "binary-op", "op": "NOT ILIKE", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_NOT:
++				case Lang::PHQL_T_NOT:
+ 					let exprReturn = ["type": "unary-op", "op": "NOT ", "right": right];
+ 					break;
+ 
+-				case PHQL_T_ISNULL:
++				case Lang::PHQL_T_ISNULL:
+ 					let exprReturn = ["type": "unary-op", "op": " IS NULL", "left": left];
+ 					break;
+ 
+-				case PHQL_T_ISNOTNULL:
++				case Lang::PHQL_T_ISNOTNULL:
+ 					let exprReturn = ["type": "unary-op", "op": " IS NOT NULL", "left": left];
+ 					break;
+ 
+-				case PHQL_T_IN:
++				case Lang::PHQL_T_IN:
+ 					let exprReturn = ["type": "binary-op", "op": "IN", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_NOTIN:
++				case Lang::PHQL_T_NOTIN:
+ 					let exprReturn = ["type": "binary-op", "op": "NOT IN", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_EXISTS:
++				case Lang::PHQL_T_EXISTS:
+ 					let exprReturn = ["type": "unary-op", "op": "EXISTS", "right": right];
+ 					break;
+ 
+-				case PHQL_T_DISTINCT:
++				case Lang::PHQL_T_DISTINCT:
+ 					let exprReturn = ["type": "unary-op", "op": "DISTINCT ", "right": right];
+ 					break;
+ 
+-				case PHQL_T_BETWEEN:
++				case Lang::PHQL_T_BETWEEN:
+ 					let exprReturn = ["type": "binary-op", "op": "BETWEEN", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_AGAINST:
++				case Lang::PHQL_T_AGAINST:
+ 					let exprReturn = ["type": "binary-op", "op": "AGAINST", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_CAST:
++				case Lang::PHQL_T_CAST:
+ 					let exprReturn = ["type": "cast", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_CONVERT:
++				case Lang::PHQL_T_CONVERT:
+ 					let exprReturn = ["type": "convert", "left": left, "right": right];
+ 					break;
+ 
+-				case PHQL_T_RAW_QUALIFIED:
++				case Lang::PHQL_T_RAW_QUALIFIED:
+ 					let exprReturn = ["type": "literal", "value": expr["name"]];
+ 					break;
+ 
+-				case PHQL_T_FCALL:
++				case Lang::PHQL_T_FCALL:
+ 					let exprReturn = this->_getFunctionCall(expr);
+ 					break;
+ 
+-				case PHQL_T_CASE:
++				case Lang::PHQL_T_CASE:
+ 					let exprReturn = this->_getCaseExpression(expr);
+ 					break;
+ 
+-				case PHQL_T_SELECT:
++				case Lang::PHQL_T_SELECT:
+ 					let exprReturn = ["type": "select", "value": this->_prepareSelect(expr, true)];
+ 					break;
+ 
+@@ -774,7 +775,7 @@ class Query implements QueryInterface, I
+ 		/**
+ 		 * Check for select * (all)
+ 		 */
+-		if columnType == PHQL_T_STARALL {
++		if columnType == Lang::PHQL_T_STARALL {
+ 			for modelName, source in this->_models {
+ 
+ 				let sqlColumn = [
+@@ -801,7 +802,7 @@ class Query implements QueryInterface, I
+ 		/**
+ 		 * Check if selected column is qualified.*, ex: robots.*
+ 		 */
+-		if columnType == PHQL_T_DOMAINALL {
++		if columnType == Lang::PHQL_T_DOMAINALL {
+ 
+ 			let sqlAliases = this->_sqlAliases;
+ 
+@@ -862,7 +863,7 @@ class Query implements QueryInterface, I
+ 		/**
+ 		 * Check for columns qualified and not qualified
+ 		 */
+-		if columnType == PHQL_T_EXPR {
++		if columnType == Lang::PHQL_T_EXPR {
+ 
+ 			/**
+ 			 * The sql_column is a scalar type returning a simple string
+@@ -929,7 +930,7 @@ class Query implements QueryInterface, I
+ 
+ 		if fetch qualified, join["qualified"] {
+ 
+-			if qualified["type"] == PHQL_T_QUALIFIED {
++			if qualified["type"] == Lang::PHQL_T_QUALIFIED {
+ 
+ 				let modelName = qualified["name"];
+ 
+@@ -972,19 +973,19 @@ class Query implements QueryInterface, I
+ 
+ 		switch type {
+ 
+-			case PHQL_T_INNERJOIN:
++			case Lang::PHQL_T_INNERJOIN:
+ 				return "INNER";
+ 
+-			case PHQL_T_LEFTJOIN:
++			case Lang::PHQL_T_LEFTJOIN:
+ 				return "LEFT";
+ 
+-			case PHQL_T_RIGHTJOIN:
++			case Lang::PHQL_T_RIGHTJOIN:
+ 				return "RIGHT";
+ 
+-			case PHQL_T_CROSSJOIN:
++			case Lang::PHQL_T_CROSSJOIN:
+ 				return "CROSS";
+ 
+-			case PHQL_T_FULLJOIN:
++			case Lang::PHQL_T_FULLJOIN:
+ 				return "FULL OUTER";
+ 		}
+ 
+@@ -1028,7 +1029,7 @@ class Query implements QueryInterface, I
+ 					"type"     : "binary-op",
+ 					"op"       : "=",
+ 					"left"     : this->_getQualified([
+-						"type"   : PHQL_T_QUALIFIED,
++						"type"   : Lang::PHQL_T_QUALIFIED,
+ 						"domain" : modelAlias,
+ 						"name"   : fields
+ 					]),
+@@ -1064,7 +1065,7 @@ class Query implements QueryInterface, I
+ 					"type" : "binary-op",
+ 					"op"   : "=",
+ 					"left" : this->_getQualified([
+-						"type"   : PHQL_T_QUALIFIED,
++						"type"   : Lang::PHQL_T_QUALIFIED,
+ 						"domain" : modelAlias,
+ 						"name"   : field
+ 					]),
+@@ -1187,7 +1188,7 @@ class Query implements QueryInterface, I
+ 					"type" : "binary-op",
+ 					"op" : "=",
+ 					"left" : this->_getQualified([
+-						"type" : PHQL_T_QUALIFIED,
++						"type" : Lang::PHQL_T_QUALIFIED,
+ 						"domain" : modelAlias,
+ 						"name" : field
+ 					]),
+@@ -1218,7 +1219,7 @@ class Query implements QueryInterface, I
+ 						"type" : "binary-op",
+ 						"op" : "=",
+ 						"left" : this->_getQualified([
+-							"type" : PHQL_T_QUALIFIED,
++							"type" : Lang::PHQL_T_QUALIFIED,
+ 							"domain" : modelAlias,
+ 							"name" : fields
+ 						]),
+@@ -1243,7 +1244,7 @@ class Query implements QueryInterface, I
+ 						"type" : "binary-op",
+ 						"op" : "=",
+ 						"left" : this->_getQualified([
+-							"type" : PHQL_T_QUALIFIED,
++							"type" : Lang::PHQL_T_QUALIFIED,
+ 							"domain" : intermediateModelName,
+ 							"name" : intermediateReferencedFields
+ 						]),
+@@ -1628,7 +1629,7 @@ class Query implements QueryInterface, I
+ 			 * Check if the order has a predefined ordering mode
+ 			 */
+ 			if fetch orderSort, orderItem["sort"] {
+-				if orderSort == PHQL_T_ASC {
++				if orderSort == Lang::PHQL_T_ASC {
+ 					let orderPartSort = [orderPartExpr, "ASC"];
+ 				} else {
+ 					let orderPartSort = [orderPartExpr, "DESC"];
+@@ -1881,7 +1882,7 @@ class Query implements QueryInterface, I
+ 					}
+ 
+ 					let selectColumns[] = [
+-						"type":   PHQL_T_DOMAINALL,
++						"type":   Lang::PHQL_T_DOMAINALL,
+     					"column": joinAlias,
+ 						"eager":  alias,
+ 						"eagerType": eagerType,
+@@ -1889,13 +1890,13 @@ class Query implements QueryInterface, I
+ 					];
+ 
+ 					let automaticJoins[] = [
+-						"type": PHQL_T_INNERJOIN,
++						"type": Lang::PHQL_T_INNERJOIN,
+ 						"qualified": [
+-							"type": PHQL_T_QUALIFIED,
++							"type": Lang::PHQL_T_QUALIFIED,
+ 							"name": relationModel
+ 						],
+ 						"alias": [
+-							"type": PHQL_T_QUALIFIED,
++							"type": Lang::PHQL_T_QUALIFIED,
+ 							"name": joinAlias
+ 						]
+ 					];
+@@ -2438,19 +2439,19 @@ class Query implements QueryInterface, I
+ 
+ 				switch type {
+ 
+-					case PHQL_T_SELECT:
++					case Lang::PHQL_T_SELECT:
+ 						let irPhql = this->_prepareSelect();
+ 						break;
+ 
+-					case PHQL_T_INSERT:
++					case Lang::PHQL_T_INSERT:
+ 						let irPhql = this->_prepareInsert();
+ 						break;
+ 
+-					case PHQL_T_UPDATE:
++					case Lang::PHQL_T_UPDATE:
+ 						let irPhql = this->_prepareUpdate();
+ 						break;
+ 
+-					case PHQL_T_DELETE:
++					case Lang::PHQL_T_DELETE:
+ 						let irPhql = this->_prepareDelete();
+ 						break;
+ 
+@@ -2876,19 +2877,19 @@ class Query implements QueryInterface, I
+ 			let exprValue = value["value"];
+ 			switch value["type"] {
+ 
+-				case PHQL_T_STRING:
+-				case PHQL_T_INTEGER:
+-				case PHQL_T_DOUBLE:
++				case Lang::PHQL_T_STRING:
++				case Lang::PHQL_T_INTEGER:
++				case Lang::PHQL_T_DOUBLE:
+ 					let insertValue = dialect->getSqlExpression(exprValue);
+ 					break;
+ 
+-				case PHQL_T_NULL:
++				case Lang::PHQL_T_NULL:
+ 					let insertValue = null;
+ 					break;
+ 
+-				case PHQL_T_NPLACEHOLDER:
+-				case PHQL_T_SPLACEHOLDER:
+-				case PHQL_T_BPLACEHOLDER:
++				case Lang::PHQL_T_NPLACEHOLDER:
++				case Lang::PHQL_T_SPLACEHOLDER:
++				case Lang::PHQL_T_BPLACEHOLDER:
+ 
+ 					if typeof bindParams != "array" {
+ 						throw new Exception("Bound parameter cannot be replaced because placeholders is not an array");
+@@ -3007,19 +3008,19 @@ class Query implements QueryInterface, I
+ 
+ 			switch value["type"] {
+ 
+-				case PHQL_T_STRING:
+-				case PHQL_T_INTEGER:
+-				case PHQL_T_DOUBLE:
++				case Lang::PHQL_T_STRING:
++				case Lang::PHQL_T_INTEGER:
++				case Lang::PHQL_T_DOUBLE:
+ 					let updateValue = dialect->getSqlExpression(exprValue);
+ 					break;
+ 
+-				case PHQL_T_NULL:
++				case Lang::PHQL_T_NULL:
+ 					let updateValue = null;
+ 					break;
+ 
+-				case PHQL_T_NPLACEHOLDER:
+-				case PHQL_T_SPLACEHOLDER:
+-				case PHQL_T_BPLACEHOLDER:
++				case Lang::PHQL_T_NPLACEHOLDER:
++				case Lang::PHQL_T_SPLACEHOLDER:
++				case Lang::PHQL_T_BPLACEHOLDER:
+ 
+ 					if typeof bindParams != "array" {
+ 						throw new Exception("Bound parameter cannot be replaced because placeholders is not an array");
+@@ -3034,7 +3035,7 @@ class Query implements QueryInterface, I
+ 					}
+ 					break;
+ 
+-				case PHQL_T_BPLACEHOLDER:
++				case Lang::PHQL_T_BPLACEHOLDER:
+ 					throw new Exception("Not supported");
+ 
+ 				default:
+@@ -3221,7 +3222,7 @@ class Query implements QueryInterface, I
+ 		 */
+ 		let query = new self();
+ 		query->setDI(this->_dependencyInjector);
+-		query->setType(PHQL_T_SELECT);
++		query->setType(Lang::PHQL_T_SELECT);
+ 		query->setIntermediate(selectIr);
+ 
+ 		return query->execute(bindParams, bindTypes);
+@@ -3343,19 +3344,19 @@ class Query implements QueryInterface, I
+ 		let type = this->_type;
+ 		switch type {
+ 
+-			case PHQL_T_SELECT:
++			case Lang::PHQL_T_SELECT:
+ 				let result = this->_executeSelect(intermediate, mergedParams, mergedTypes);
+ 				break;
+ 
+-			case PHQL_T_INSERT:
++			case Lang::PHQL_T_INSERT:
+ 				let result = this->_executeInsert(intermediate, mergedParams, mergedTypes);
+ 				break;
+ 
+-			case PHQL_T_UPDATE:
++			case Lang::PHQL_T_UPDATE:
+ 				let result = this->_executeUpdate(intermediate, mergedParams, mergedTypes);
+ 				break;
+ 
+-			case PHQL_T_DELETE:
++			case Lang::PHQL_T_DELETE:
+ 				let result = this->_executeDelete(intermediate, mergedParams, mergedTypes);
+ 				break;
+ 
+@@ -3371,7 +3372,7 @@ class Query implements QueryInterface, I
+ 			/**
+ 			 * Only PHQL SELECTs can be cached
+ 			 */
+-			if type != PHQL_T_SELECT {
++			if type != Lang::PHQL_T_SELECT {
+ 				throw new Exception("Only PHQL statements that return resultsets can be cached");
+ 			}
+ 
+@@ -3538,7 +3539,7 @@ class Query implements QueryInterface, I
+ 		 */
+ 		let intermediate = this->parse();
+ 
+-		if this->_type == PHQL_T_SELECT {
++		if this->_type == Lang::PHQL_T_SELECT {
+ 			return this->_executeSelect(intermediate, this->_bindParams, this->_bindTypes, true);
+ 		}
+ 

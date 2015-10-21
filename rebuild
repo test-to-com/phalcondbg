@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # --------------------------------------------------------------------------
-# ZEP to PHP Translator                                                    
+# PHALCON PHP Debug Extension                                                    
 # --------------------------------------------------------------------------
 # Copyright (c) 2015 pf at sourcenotes.org                                 
 # --------------------------------------------------------------------------
@@ -116,3 +116,32 @@ zephir compile phalcondbg
 
 # Restore Working Directory
 cd "${CWD}"
+
+# PHALCON PHP Source Directory (copy of ZEP from CPHALCON)
+PHALCONPHP="${CWD}/phalcon"
+
+if [ ! -d "${PHALCONPHP}" ]; then # NO: Create
+  mkdir -p "${PHALCONPHP}"
+fi
+
+# Duplicate ZEPs
+rsync -a "${SPHALCONROOT}/phalcon/" "${PHALCONPHP}"
+
+# Apply Patches
+
+# Patch List
+PATCHES="${CWD}/patches/*.patch"
+
+# Apply Patches
+for PATCH in ${PATCHES}; do
+  FILE=$(basename "${PATCH}") # Extract File Name
+  FILE=${FILE//_/\/} # Convert Underscores to Directory Slashes
+  FILE=${FILE//\.patch/} # Remove .patch
+  patch -p0 "${CWD}/phalcon/${FILE}" < "${PATCH}"
+done
+
+# Create ZEP to PHP Output Directories
+mkdir "${BUILD}/"{cache,tmp,php}
+
+# Convert ZEP to PHP
+zeptophp -c "${BUILD}/cache" -t "${BUILD}/tmp" -o "${BUILD}/php" "${CWD}/phalcon"

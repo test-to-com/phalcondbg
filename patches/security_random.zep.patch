@@ -1,0 +1,20 @@
+--- ../externals/cphalcon/phalcon/security/random.zep	2015-10-20 08:51:08.611674342 +0100
++++ ../../zephir/phalcon/security/random.zep	2015-10-05 13:40:29.052651811 +0100
+@@ -104,7 +104,7 @@ class Random
+ 		}
+ 
+ 		if function_exists("\\Sodium\\randombytes_buf") {
+-			return \\Sodium\\randombytes_buf(len);
++			return \Sodium\randombytes_buf(len);
+ 		}
+ 
+ 		if function_exists("openssl_random_pseudo_bytes") {
+@@ -295,7 +295,7 @@ class Random
+ 		}
+ 
+ 		if function_exists("\\Sodium\\randombytes_uniform") {
+-			return \\Sodium\\randombytes_uniform(len);
++			return \Sodium\randombytes_uniform(len);
+ 		}
+ 
+ 		let hex = dechex(len);

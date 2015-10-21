@@ -1,0 +1,10 @@
+--- ../externals/cphalcon/phalcon/mvc/router.zep	2015-10-20 08:51:08.607674342 +0100
++++ ../../zephir/phalcon/mvc/router.zep	2015-10-06 09:40:05.372616572 +0100
+@@ -23,7 +23,6 @@ use Phalcon\DiInterface;
+ use Phalcon\Mvc\Router\Route;
+ use Phalcon\Mvc\Router\Exception;
+ use Phalcon\Http\RequestInterface;
+-use Phalcon\Events\ManagerInterface;
+ use Phalcon\Mvc\Router\GroupInterface;
+ use Phalcon\Mvc\Router\RouteInterface;
+ use Phalcon\Di\InjectionAwareInterface;

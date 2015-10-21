@@ -1,20 +1,15 @@
 
 /*
- +------------------------------------------------------------------------+
- | Phalcon Framework                                                      |
- +------------------------------------------------------------------------+
- | Copyright (c) 2011-2015 Phalcon Team (http://www.phalconphp.com)       |
- +------------------------------------------------------------------------+
- | This source file is subject to the New BSD License that is bundled     |
- | with this package in the file docs/LICENSE.txt.                        |
- |                                                                        |
- | If you did not receive a copy of the license and are unable to         |
- | obtain it through the world-wide-web, please send an email             |
- | to license@phalconphp.com so we can send you a copy immediately.       |
- +------------------------------------------------------------------------+
- | Authors: Andres Gutierrez <andres@phalconphp.com>                      |
- |          Eduar Carvajal <eduar@phalconphp.com>                         |
- +------------------------------------------------------------------------+
+  +--------------------------------------------------------------------------+
+  | PHALCON PHP Debug Extension                                              |
+  +--------------------------------------------------------------------------+
+  | Copyright (c) 2015 pf at sourcenotes.org                                 |
+  +--------------------------------------------------------------------------+
+  | This source file is subject the MIT license, that is bundled with        |
+  | this package in the file LICENSE, and is available through the           |
+  | world-wide-web at the following url:                                     |
+  | https://opensource.org/licenses/MIT                                      |
+  +--------------------------------------------------------------------------+
  */
 
 namespace PhalconDBG;

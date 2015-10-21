@@ -1,0 +1,11 @@
+--- ../externals/cphalcon/phalcon/mvc/collection/manager.zep	2015-10-20 08:51:08.603674342 +0100
++++ ../../zephir/phalcon/mvc/collection/manager.zep	2015-10-03 10:38:58.534496499 +0100
+@@ -109,7 +109,7 @@ class Manager implements InjectionAwareI
+ 	 * @param \Phalcon\Mvc\CollectionInterface $model
+  	 * @return \Phalcon\Events\ManagerInterface
+ 	 */
+-	public function getCustomEventsManager(<CollectionInterface> model) //-> <\Phalcon\Events\ManagerInterface>
++	public function getCustomEventsManager(<CollectionInterface> model) 
+ 	{
+ 		var customEventsManager, className;
+ 

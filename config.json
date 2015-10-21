@@ -54,7 +54,7 @@
     },
     "namespace": "phalcondbg",
     "name": "phalcondbg",
-    "description": "PHALCON PHP VERSION Debug Helper Extension",
+    "description": "PHALCON PHP Debug Extension",
     "author": "pf at sourcenotes.org",
     "version": "0.1.0",
     "verbose": true,

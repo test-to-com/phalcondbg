@@ -1,0 +1,31 @@
+--- ../externals/cphalcon/phalcon/loader.zep	2015-10-20 08:51:08.599674342 +0100
++++ ../../zephir/phalcon/loader.zep	2015-10-06 09:04:06.384632500 +0100
+@@ -342,6 +342,28 @@ class Loader implements EventsAwareInter
+ 								 */
+ 								return true;
+ 							}
++
++              /**
++               * Try All Lower Case File Name (PF: 20151006)
++               */
++							let filePath = fixedDirectory . strtolower(fileName . "." . extension);
++							if is_file(filePath) {
++
++								if typeof eventsManager == "object" {
++									let this->_foundPath = filePath;
++									eventsManager->fire("loader:pathFound", this, filePath);
++								}
++
++								/**
++								 * Simulate a require
++								 */
++								require filePath;
++
++								/**
++								 * Return true mean success
++								 */
++								return true;
++							}
+ 						}
+ 					}
+ 				}

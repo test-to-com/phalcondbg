@@ -1,0 +1,10 @@
+--- ../externals/cphalcon/phalcon/http/response.zep	2015-10-20 08:51:08.599674342 +0100
++++ ../../zephir/phalcon/http/response.zep	2015-10-08 10:39:20.435902203 +0100
+@@ -27,7 +27,6 @@ use Phalcon\Mvc\UrlInterface;
+ use Phalcon\Mvc\ViewInterface;
+ use Phalcon\Http\Response\Headers;
+ use Phalcon\Di\InjectionAwareInterface;
+-use Phalcon\Mvc\ViewInterface;
+ 
+ /**
+  * Phalcon\Http\Response

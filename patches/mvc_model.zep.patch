@@ -1,0 +1,10 @@
+--- ../externals/cphalcon/phalcon/mvc/model.zep	2015-10-20 08:51:08.603674342 +0100
++++ ../../zephir/phalcon/mvc/model.zep	2015-10-09 10:58:42.334993255 +0100
+@@ -40,7 +40,6 @@ use Phalcon\Mvc\Model\Relation;
+ use Phalcon\Mvc\Model\RelationInterface;
+ use Phalcon\Mvc\Model\BehaviorInterface;
+ use Phalcon\Mvc\Model\Exception;
+-use Phalcon\Mvc\Model\MetadataInterface;
+ use Phalcon\Mvc\Model\MessageInterface;
+ use Phalcon\Events\ManagerInterface as EventsManagerInterface;
+ 

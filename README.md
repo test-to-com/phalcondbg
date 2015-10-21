@@ -81,3 +81,94 @@ If not, you will receive an error, that hopefully will explain what you need to 
 
 I have not tried to build the PHALCON PHP Code or Debug Extension in windows, but, since the extension uses ZEPHIR, it should be buildable on windows.
 (TODO) I will try to work out a batch file that is capable of building this project in Windows, for now, it's basically linux only.
+
+Special Notes
+-------------
+
+Why the ZEP patch files?
+
+Well a series of patches are just to correct problems in PHALCON ZEP code, that are either automatically corrected taken care of by ZEPHIR, during it's conversion of ZEP to C, or small bugs in the actual ZEPHIR code.
+
+Example:
+
+1. http_response.zep.patch - removes a duplicate use (use Phalcon\Mvc\ViewInterface). Causes a duplicate include in the PHP code and the PHP executable to abort with an error.
+2. security_random.zep.patch - in the ZEP code a double '\' is used (return \\\\Sodium\\\\randombytes_buf(len);) Potentially a bug in ZEPHIR.
+
+Another set of patches (mvc_model_query_lang.zep.patch and mvc_model_query.zep.patch) are to handle a hack by the PHALCON TEAM in the it's use of the PHQL Parser.
+
+Why a hack?
+
+Well to explain that, you have to how these parsers are built and coded. 
+
+PHALCON team uses [re2c](http://re2c.org/) to build the scanner and [lemon](http://www.hwaci.com/sw/lemon/) to build the parser.
+
+The scanner produces a C include file (scanner.h) that contains IDENTIFIERS for each scan token (ex: #define #define PHQL_T_STARALL 352).
+The PHALCON uses a HACK/BUG/FEATURE in ZEPHIR that translates something like (taken from PHALCON mvc\model\query.zep):
+
+```
+protected final function _getCallArgument(array! argument) -> array
+{
+	if argument["type"] == PHQL_T_STARALL {
+		return ["type": "all"];
+	}
+	return this->_getExpression(argument);
+}
+```
+
+into a C code like:
+
+```
+PHP_METHOD(Phalcon_Mvc_Model_Query, _getCallArgument) {
+
+	int ZEPHIR_LAST_CALL_STATUS;
+	zval *argument_param = NULL, *_0;
+	zval *argument = NULL;
+
+	ZEPHIR_MM_GROW();
+	zephir_fetch_params(1, 1, 0, &argument_param);
+
+	argument = argument_param;
+
+
+	zephir_array_fetch_string(&_0, argument, SL("type"), PH_NOISY | PH_READONLY, "phalcon/mvc/model/query.zep", 336 TSRMLS_CC);
+	if (ZEPHIR_IS_LONG(_0, 352)) {
+		zephir_create_array(return_value, 1, 0 TSRMLS_CC);
+		add_assoc_stringl_ex(return_value, SS("type"), SL("all"), 1);
+		RETURN_MM();
+	}
+	ZEPHIR_RETURN_CALL_METHOD(this_ptr, "_getexpression", NULL, 317, argument);
+	zephir_check_call_status();
+	RETURN_MM();
+
+}
+```
+
+Notice that, PHQL_T_STARALL generated ZEPHIR_IS_LONG(_0, 352). How it generated this code, I don't know. 
+
+But I assume that:
+
+1. It directly references to "scanner.h" file (which would require some sort o C preprocessor function in ZEPHIR) to extract the values, or
+2. That this is handed coded modification of the ZEPHIR produced files.
+
+In either case, ZEP to PHP translates this code (without the patch) to:
+
+```
+protected final function _getCallArgument($argument)
+{
+  if ($argument ['type'] == PHQL_T_STARALL) {
+    return ['type' => 'all'];
+  }
+  return $this->_getExpression($argument) ;
+}
+```
+
+Notice the simple use of PHQL_T_STARALL. Unfortunately, unless you 'define' PHQL_T_STARALL it will be interpreted by PHP as string and not produce the correct results.
+
+My solution to the problem was, to import the constants defined in "scanner.h", translated by hand, into mvc/model/query/lang.zep and then replace PHQL_T_* by Lang::PHQL_T_*.
+
+Why do I think that PHALCON TEAM solution is hack?
+
+Because it bypasses ZEPHIR's compile time type checking, which was one of the stated goals of the ZEPHIR Languange.
+
+
+**IMPORTANT:** I have not applied similar patches for Volt and Annotations Parser, BECAUSE I HAVEN'T TESTED THAT CODE. BUT, A SET OF SIMILAR PATCHES WILL PROBABLY BE REQUIRED in order to use Volt and Annotations Parsers withou error.

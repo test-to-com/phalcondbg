@@ -40,6 +40,14 @@ Build Instructions
 
 ### Linux/Unix/Mac
 
+#### Requirements
+You will need, working:
+
+* [ZEPHIR](http://zephir-lang.com/) last version tested was 0.8.x
+* [ZEP to PHP](https://github.com/test-to-com/zep-to-php)
+
+**NOTE:** Please follow these projects install instruction (including there requirements). They have to be working for what follows to work!!!
+
 This should basically work on any Linux Distribution.
 
 ```bash
@@ -65,11 +73,11 @@ IMPORTANT:
 *********************************************************************
 ```
 
-If not, you will receive an error, that hopefully will explai what you need to do to rebuild.
+If not, you will receive an error, that hopefully will explain what you need to do to rebuild.
 
 **NOTE:** It's up to you to then install the extension into you version of PHP and add the PHALCON PHP Code to your applications namespace
 
 ### Windows
 
 I have not tried to build the PHALCON PHP Code or Debug Extension in windows, but, since the extension uses ZEPHIR, it should be buildable on windows.
-(TODO) I will try to work out a batch file that is capable of building this project in windows.
+(TODO) I will try to work out a batch file that is capable of building this project in Windows, for now, it's basically linux only.

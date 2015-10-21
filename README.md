@@ -83,6 +83,19 @@ I have not tried to build the PHALCON PHP Code or Debug Extension in windows, bu
 
 **TODO:** I will try to work out a batch file that is capable of building this project in Windows, for now, it's basically linux only.
 
+How to use
+----------
+
+Currently, you do the following:
+
+1. Build the PHALCON Debug Extension and PHP translation of PHALCON (i.e. run ./rebuild)
+2. Replace the "REAL" PHALCON Extension with the Debug Version (i.e. in the php.ini comment out **extension=phalcon.so** and add a **extension=phalcondbg.so**)
+3. Add PHALCON translated PHP Files to your projects source.
+4. Add the PHALCON PHP source path, to the loaders namespace.
+5. (CURRENTLY) you will also need to add the PHP files under zephirbase to your source. These files provide an emulation base to some functions and features provided by ZEPHIR that are not _exported_ by PHALCON Debug Extension.
+
+**TODO:** Provide an example skeleton project to show how this all links in.
+
 Implementation Notes
 --------------------
 

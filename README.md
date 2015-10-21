@@ -144,11 +144,11 @@ PHP_METHOD(Phalcon_Mvc_Model_Query, _getCallArgument) {
 }
 ```
 
-Notice that, PHQL_T_STARALL generated ZEPHIR_IS_LONG(_0, 352). How it generated this code, I don't know. 
+Notice that, PHQL_T_STARALL generated ZEPHIR_IS_LONG(_0, 352). How it generated this code? 
 
-But I assume that:
+I don't know. But I assume that it is one of the following 2 options:
 
-1. It directly referenced the "scanner.h" file (which would require some sort o C preprocessor function in ZEPHIR) to extract the values, or
+1. ZEPHIR directly references the "scanner.h" file (which would require some sort o C preprocessor function in ZEPHIR, which I didn't see) to extract the values, or
 2. That this is handed coded modification of the ZEPHIR produced files.
 
 In either case, ZEP to PHP translates this code (without the patch) to:
@@ -171,7 +171,7 @@ Why do I think that PHALCON TEAM solution is hack?
 
 Because it bypasses ZEPHIR's compile time type checking, which was one of the stated goals of the ZEPHIR Languange.
 
-**IMPORTANT:** I have not applied similar patches for Volt and Annotations Parser, BECAUSE I HAVEN'T TESTED THAT CODE. BUT, A SET OF SIMILAR PATCHES WILL PROBABLY BE REQUIRED in order to use Volt and Annotations Parsers without error.
+**IMPORTANT:** I have NOT applied similar patches for Volt and Annotations Parser, BECAUSE I HAVEN'T TESTED THAT CODE. BUT, A SET OF SIMILAR PATCHES WILL PROBABLY BE REQUIRED in order to use Volt and Annotations Parsers without error.
 
 The last important patch was to loader.zep.
 

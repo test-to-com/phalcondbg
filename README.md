@@ -80,7 +80,8 @@ If not, you will receive an error, that hopefully will explain what you need to 
 ### Windows
 
 I have not tried to build the PHALCON PHP Code or Debug Extension in windows, but, since the extension uses ZEPHIR, it should be buildable on windows.
-(TODO) I will try to work out a batch file that is capable of building this project in Windows, for now, it's basically linux only.
+
+**TODO:** I will try to work out a batch file that is capable of building this project in Windows, for now, it's basically linux only.
 
 Implementation Notes
 --------------------
@@ -91,7 +92,7 @@ Well a series of patches was just to correct problems in PHALCON ZEP code, that 
 
 Example:
 
-1. http_response.zep.patch - removes a duplicate use (use Phalcon\Mvc\ViewInterface). Causes a duplicate include in the PHP code and the PHP executable to abort with an error.
+1. http_response.zep.patch - removes a duplicate _use_ (use Phalcon\Mvc\ViewInterface). Create a duplicate _use_ in the PHP code and the corresponding error when run in PHP.
 2. security_random.zep.patch - in the ZEP code a double '\' is used (return \\\\Sodium\\\\randombytes_buf(len);) Potentially a bug in ZEPHIR.
 
 Another set of patches (mvc_model_query_lang.zep.patch and mvc_model_query.zep.patch) are to handle a hack by the PHALCON TEAM in the it's use of the PHQL Parser.

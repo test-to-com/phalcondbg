@@ -82,8 +82,8 @@ If not, you will receive an error, that hopefully will explain what you need to 
 I have not tried to build the PHALCON PHP Code or Debug Extension in windows, but, since the extension uses ZEPHIR, it should be buildable on windows.
 (TODO) I will try to work out a batch file that is capable of building this project in Windows, for now, it's basically linux only.
 
-Special Notes
--------------
+Implementation Notes
+--------------------
 
 Why the ZEP patch files?
 
@@ -171,8 +171,8 @@ Why do I think that PHALCON TEAM solution is hack?
 
 Because it bypasses ZEPHIR's compile time type checking, which was one of the stated goals of the ZEPHIR Languange.
 
-**IMPORTANT:** I have not applied similar patches for Volt and Annotations Parser, BECAUSE I HAVEN'T TESTED THAT CODE. BUT, A SET OF SIMILAR PATCHES WILL PROBABLY BE REQUIRED in order to use Volt and Annotations Parsers withou error.
+**IMPORTANT:** I have not applied similar patches for Volt and Annotations Parser, BECAUSE I HAVEN'T TESTED THAT CODE. BUT, A SET OF SIMILAR PATCHES WILL PROBABLY BE REQUIRED in order to use Volt and Annotations Parsers without error.
 
 The last important patch was to loader.zep.
 
-This patch just simply modifies the autoloader so that it searches for missing classes, in files, with the class name in lowercase (rather than just searching for php files whose name match the class name, case sensitive).
+This patch just simply modifies the autoloader so that it searches for missing classes, in files, with the class name in lowercase (rather than just simply using an exact match of the class name, case included).

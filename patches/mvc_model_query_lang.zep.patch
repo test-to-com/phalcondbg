@@ -1,6 +1,6 @@
 --- ../externals/cphalcon/phalcon/mvc/model/query/lang.zep	2015-10-20 08:51:08.607674342 +0100
-+++ ../../zephir/phalcon/mvc/model/query/lang.zep	2015-10-13 13:46:11.265153140 +0100
-@@ -38,6 +38,127 @@ namespace Phalcon\Mvc\Model\Query;
++++ ../phalcon/mvc/model/query/lang.zep	2015-10-27 08:56:42.015681617 +0000
+@@ -38,6 +38,127 @@
   */
  abstract class Lang
  {
@@ -18,32 +18,32 @@
 +  const PHQL_T_HINTEGER = 414;
 +
 +  /** Operators */
-+  const PHQL_T_ADD = '+';
-+  const PHQL_T_SUB = '-';
-+  const PHQL_T_MUL = '*';
-+  const PHQL_T_DIV = '/';
-+  const PHQL_T_MOD = '%';
-+  const PHQL_T_BITWISE_AND = '&';
-+  const PHQL_T_BITWISE_OR = '|';
-+  const PHQL_T_BITWISE_XOR = '^';
-+  const PHQL_T_BITWISE_NOT = '~';
++  const PHQL_T_ADD = 43; // '+'
++  const PHQL_T_SUB = 45; // '-'
++  const PHQL_T_MUL = 42; // '*'
++  const PHQL_T_DIV = 47; // '/'
++  const PHQL_T_MOD = 37; // '%'
++  const PHQL_T_BITWISE_AND = 38; // '&'
++  const PHQL_T_BITWISE_OR = 124; // '|'
++  const PHQL_T_BITWISE_XOR = 94; // '^'
++  const PHQL_T_BITWISE_NOT = 126; // '~'
 +  const PHQL_T_AND = 266;
 +  const PHQL_T_OR = 267;
 +  const PHQL_T_LIKE = 268;
 +  const PHQL_T_ILIKE = 275;
 +  const PHQL_T_AGAINST = 276;
-+  const PHQL_T_DOT = '.';
++  const PHQL_T_DOT = 46; // '.'
 +  const PHQL_T_COMMA = 269;
-+  const PHQL_T_COLON = ':';
-+  const PHQL_T_EQUALS = '=';
++  const PHQL_T_COLON = 58; // ':'
++  const PHQL_T_EQUALS = 61; // '='
 +  const PHQL_T_NOTEQUALS = 270;
-+  const PHQL_T_NOT = '!';
-+  const PHQL_T_LESS = '<';
++  const PHQL_T_NOT = 33; // '!'
++  const PHQL_T_LESS = 60; // '<'
 +  const PHQL_T_LESSEQUAL = 271;
-+  const PHQL_T_GREATER = '>';
++  const PHQL_T_GREATER = 62; // '>'
 +  const PHQL_T_GREATEREQUAL = 272;
-+  const PHQL_T_PARENTHESES_OPEN = '(';
-+  const PHQL_T_PARENTHESES_CLOSE = ')';
++  const PHQL_T_PARENTHESES_OPEN = 40; // '('
++  const PHQL_T_PARENTHESES_CLOSE = 41; // ')'
 +
 +  /** Placeholders */
 +  const PHQL_T_NPLACEHOLDER = 273;
